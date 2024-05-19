@@ -19,7 +19,6 @@ client = discord.Client(intents=intents)
 deletion_schedule_file = 'deletion_schedule.json'
 
 # Persistence Setup/Load
-
 def save_deletion_schedule(schedule):
     """Saves the message deletion schedule to a file."""
     with open(deletion_schedule_file, 'w') as file:
@@ -55,12 +54,38 @@ async def schedule_deletions():
             message_id, channel_id = map(int, msg_info.split('_'))
             asyncio.create_task(delete_message_after_delay(message_id, channel_id, delay))
 
+# Helper function to split message into chunks without breaking words
+def split_message_into_chunks(message, chunk_size=1024):
+    words = message.split()
+    chunks = []
+    current_chunk = ""
+
+    for word in words:
+        if len(current_chunk) + len(word) + 1 > chunk_size:
+            # Try to split at the last period within the limit
+            if '.' in current_chunk:
+                split_pos = current_chunk.rfind('.')
+                chunks.append(current_chunk[:split_pos+1])
+                current_chunk = current_chunk[split_pos+1:].strip() + " " + word
+            else:
+                chunks.append(current_chunk)
+                current_chunk = word
+        else:
+            if current_chunk:
+                current_chunk += " " + word
+            else:
+                current_chunk = word
+
+    if current_chunk:
+        chunks.append(current_chunk)
+
+    return chunks
+
 # Logging purposes, confirming bot correctly loaded into discord gateway
 @client.event
 async def on_ready():
     print(f'We have logged in as {client.user}')
     await schedule_deletions()
-
 
 # Intercepting messages to repost
 @client.event
@@ -68,20 +93,23 @@ async def on_message(message):
     if message.author == client.user or message.channel.id != CHANNEL_ID:
         return
 
-# Setting "Empty message" as string if for some reason message is empty. Shouldnt happen but better safe than sorry
-    message_content = message.content
-    if not message_content:
-        message_content = "(Empty message)"
-    
-    # Create an anonymized embed to replace sent message
+    # Split the message content into chunks without breaking words
+    message_content = message.content or "(Empty message)"
+    message_chunks = split_message_into_chunks(message_content)
+
+    # Create an anonymized embed to replace the sent message
     embed = discord.Embed(color=discord.Color.blue())
-    embed.add_field(name="The radio crackles to life and you hear a voice...:", value=message_content, inline=False)
+    embed.add_field(name="The radio crackles to life and you hear a voice...:", value=message_chunks[0], inline=False)
+    for chunk in message_chunks[1:]:
+        embed.add_field(name="\u200b", value=chunk, inline=False)
     embed.set_footer(text="ResurgenceRP Radio")
   
     # Create Staff Log embed with user name and user ID
     sender_id = message.author.id
     embed_admin = discord.Embed(color=discord.Color.blue())
-    embed_admin.add_field(name=f"User: {message.author} ID: {sender_id} | Send a radio message: ", value=message_content, inline=False)
+    embed_admin.add_field(name=f"User: {message.author} ID: {sender_id} | Send a radio message: ", value=message_chunks[0], inline=False)
+    for chunk in message_chunks[1:]:
+        embed_admin.add_field(name="\u200b", value=chunk, inline=False)
     embed_admin.set_footer(text="ResurgenceRP Radio Admin Log")
 
     # Send anonymized message
