@@ -407,7 +407,7 @@ async def on_message(message):
         # Create Staff Log embed with user name, user ID, and a ping to the sender
         sender_id = message.author.id
         embed_admin = discord.Embed(color=discord.Color.blue())
-        embed_admin.add_field(name=f"User: <@{sender_id}> ID: {sender_id} | Sent a radio message: ", value=message_chunks[0], inline=False)
+        embed_admin.add_field(name=f"User: {message.author} ID: {sender_id} | Sent a radio message: ", value=message_chunks[0], inline=False)
         for chunk in message_chunks[1:]:
             embed_admin.add_field(name="\u200b", value=chunk, inline=False)
         embed_admin.set_footer(text="ResurgenceRP Radio Admin Log")
