@@ -73,7 +73,7 @@ This Discord bot is specifically designed for DayZ Roleplay (RP) communities, ai
      ```bash
      python main.py
      ```
-   - Alternatively, set up the bot as a service:
+   - Alternatively, set up the bot as a service [Linux]:
      ```ini
      [Unit]
      Description=Radio Bot Service
