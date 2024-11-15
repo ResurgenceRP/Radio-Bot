@@ -1,0 +1,14 @@
+# config.yaml
+TOKEN: "TOKEN"              # Discord bot token, string
+CHANNEL_ID: 1307016491677519943        # Channel ID for bot to listen in, integer
+ADMIN_CHANNEL_ID: 1307016506739130400  # Channel ID of channel for administrator login (Player name, Message, no autodeletion), integer
+STAFF_ROLE_ID: 1307026532895817829    # Role ID of staff member group to ping on critical errors, integer
+
+# OPTIONAL !!!! Change flatfile storage to SQL based database:
+USE_DATABASE: false                   # Change to "true" to enable Database Storage, set to "false" to switch to flatfile storage. Default value: false, Boolean
+DATABASE:
+  HOST: "localhost"                   # Location of database server, string
+  PORT: 3306                          # Port database is listening on, integer
+  USER: "USERNAME"                    # username in database with access to database defined in DATABASE_NAME, string
+  PASSWORD: "PASSWORD"              # Password to USER account, string
+  DATABASE_NAME: "DATABASE_NAME"           # Database name, default: RADIO_BOT, string
