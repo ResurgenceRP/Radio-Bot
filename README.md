@@ -6,59 +6,131 @@ This Discord bot is specifically designed for DayZ Roleplay (RP) communities, ai
 
 ## Features
 
-- **In-Character Radio Communication:** The bot captures messages sent to a specific channel (designated as the in-game radio channel) and reposts them embedded in a format that simulates radio communication, thereby enhancing the role-play immersion. Each message is clearly labeled as a radio transmission, making it distinct from out-of-character communication.
+- **In-Character Radio Communication:**
+  - Captures messages sent to a designated channel (the in-game radio channel) and reposts them embedded in a format simulating radio communication, enhancing role-play immersion.
 
-- **Administration Log:** Each radio message sent through the bot is also reposted to an admin-specific channel. This copy includes the author's Discord tag and ID, aiding moderators and administrators in monitoring and managing in-character communication.
+- **Administration Log:**
+  - Each radio message is reposted to an admin-specific channel with detailed metadata, including the author's Discord tag and ID. This feature aids administrators in monitoring in-character communication for moderation.
 
-- **Automated Message Deletion:** To prevent clutter and maintain a clean channel, the bot automatically deletes the reposted radio messages after a set period (default is 24 hours). This feature helps in managing the flow of messages, ensuring that the radio channel remains relevant and easy to follow.
+- **Automated Message Deletion:**
+  - Reposted radio messages are automatically deleted after 24 hours (configurable). This ensures that the channel remains clutter-free and focused on relevant role-play communication.
 
-- **Persistence:** The bot maintains a schedule of message deletions, saving this information between restarts to ensure that message management remains consistent, even after downtime.
+- **Scheduled Cleanup:**
+  - Uses a periodic cleanup task to handle expired messages efficiently, ensuring performance and scalability.
+
+- **Configuration Validation:**
+  - Ensures valid configuration using schema validation, reducing errors caused by misconfigurations.
 
 ## Setup Instructions
 
-1. **Prepare Your Discord Bot Token and Channel IDs:**
-   - You must have a Discord bot token and the IDs for the channels you wish to use. The `TOKEN` variable is your bot's token (Get it from [Discord Developer Panel](https://discord.com/developers/applications) ). `CHANNEL_ID` is for the channel where users will send their in-character radio messages, and `ADMIN_CHANNEL_ID` is for the channel where copies of these messages will be sent for administrative purposes.
+### 1. **Get Your Bot Token**
+   - Visit the [Discord Developer Portal](https://discord.com/developers/applications).
+   - Log in with your Discord account.
+   - Click the "New Application" button at the top-right.
+   - Enter a name for your bot (e.g., "Radio Bot") and click "Create."
+   - In the application's settings menu on the left, select the **Bot** tab and click "Add Bot."
+   - Confirm by clicking "Yes, do it!"
+   - Under the **Bot** tab, scroll down to "Token" and click the "Copy" button to copy your bot token.
+   > [!CAUTION]
+   > Keep your token secret! Do not share it publicly.
 
-2. **Install Python and discord.py:**
-   - Ensure Python 3 is installed on your system.
-   - Install the `discord.py` library using pip:
-     ```
-     pip install -U discord.py
+### 2. **Get Your Channel IDs**
+   - Open your Discord application.
+   - Enable Developer Mode:
+     - Go to **User Settings** (click the gear icon in the bottom-left).
+     - Under **Advanced**, toggle on **Developer Mode**.
+   - Right-click on the desired channel and select **Copy ID**:
+     - **Radio Channel ID:** Right-click the channel where users will send in-character radio messages.
+     - **Admin Channel ID:** Right-click the channel where administrative logs will be sent.
+   - Paste the copied IDs into a text file for safekeeping.
+
+### 3. **Install Python and Required Libraries**
+   - Ensure Python 3.9+ is installed on your system.
+   - Install the required libraries:
+     ```bash
+     pip install -U discord.py aiomysql pydantic
      ```
 
-3. **Place the Script in Your Environment:**
-   - Save the provided Python script to a directory of your choice on the host machine.
+### 4. **Configure the Bot**
+   - Edit `config.yaml` file in the same directory as the script with the following structure:
+     ```yaml
+     TOKEN: "your_discord_bot_token"
+     CHANNEL_ID: 123456789012345678  # Replace with your radio channel ID
+     ADMIN_CHANNEL_ID: 123456789012345678  # Replace with your admin channel ID
+     USE_DATABASE: false                   # Change to "true" to enable Database Storage, set to "false" to switch to flatfile storage. Default value: false, Boolean
+     DATABASE:
+      HOST: "localhost"                   # Location of database server, string
+      PORT: 3306                          # Port database is listening on, integer
+      USER: "your_username"               # username in database with access to database defined in DATABASE_NAME, string
+      PASSWORD: "your_password"           # Password to USER account, string
+      DATABASE_NAME: "RADIO_BOT"          # Database name, default: RADIO_BOT, string
+     ``` 
+   > [!IMPORTANT]  
+   > If you decide to use database storage it is important to create a new dedicated database user for the bot following your flavor of database instructions. Avoid using admin accounts with broad access ranges for security reasons. If you are unsure which is better choice for you flatfile storage is a safer bet albeit might be slower on servers with a lot of messages being sent.   
 
-4. **Running the Bot:**
-   - Navigate to the directory where you saved the script.
-   - Run the bot using the following command:
+### 5. **Run the Bot**
+   - Navigate to the directory containing the script and `config.yaml`.
+   - Start the bot:
+     ```bash
+     python main.py
      ```
-     python <script_name>.py
-     ```
-     Replace `<script_name>` with the name of your Python script file.
-
-     Alternatively you can setup bot as service using something similar to:
-     ```
+   - Alternatively, set up the bot as a service:
+     ```ini
      [Unit]
-     Description=SERVICE_NAME
+     Description=Radio Bot Service
 
      [Service]
      ExecStart=python3 main.py
-     WorkingDirectory=PATH_TO_MAIN.PY
+     WorkingDirectory=/path/to/script
      Restart=always
 
      [Install]
      WantedBy=multi-user.target
      ```
-     
-5. **Bot Permissions:**
-   - Make sure your bot has the necessary permissions on your Discord server to read and send messages, manage messages, and embed links in both the radio and admin channels.
+   > [!TIP]
+   > Setting bot to run as serivice will allow it to automatically start after a crash or server reboot
+
+### 6. **MySQL Database Setup**
+   - If using a database, ensure MySQL is running and accessible.
+   - The bot will automatically create the required `deletion_schedule` table if it doesn’t exist.
+
+### 7. **Bot Permissions**
+   - Make sure your bot has the following permissions:
+     - Read Messages
+     - Send Messages
+     - Manage Messages
+     - Embed Links
 
 ## Usage
 
-Once set up, the bot will automatically handle messages sent to the designated radio channel, reposting them in an immersive format and logging them for administrative purposes. Messages will be scheduled for automatic deletion 24 hours after being reposted, maintaining channel hygiene without manual intervention.
+Once set up, the bot will automatically:
+- Handle messages sent to the designated radio channel.
+- Repost messages in an immersive, in-character radio format.
+- Log messages in the admin channel for moderation purposes.
+- Delete reposted messages after the specified duration (default: 24 hours).
+- Notify administrators in case of critical errors (e.g., database failures).
 
+### Example Configuration Validation Errors
+If your `config.yaml` file is missing required keys or has invalid types, the bot will display detailed validation errors to help you fix the configuration.
 
-## Disclaimer:
+## Advanced Features
+
+- **Fallback to JSON:**
+  - If the database connection fails during runtime, the bot will fallback to JSON-based persistence, ensuring uninterrupted operation.
+
+- **Graceful Error Reporting:**
+  - For unrecoverable errors, the bot posts a clear message in the public channel:
+    ```
+    BOT ERROR PLEASE CONTACT ADMINISTRATOR
+    ```
+    - Additionally, the admin channel receives detailed error information.
+
+- **Periodic Cleanup:**
+  - The bot uses a periodic task to delete expired messages efficiently, ensuring smooth operation even under high usage.
+
+- **Retry Mechanisms:**
+  - Automatically retries Discord API calls when encountering rate limits or transient errors.
+
+## Disclaimer
+
 This code is provided "as is", without warranty of any kind, express or implied, including but not limited to the warranties of merchantability, fitness for a particular purpose, and noninfringement. In no event shall the authors or copyright holders be liable for any claim, damages, or other liability, whether in an action of contract, tort or otherwise, arising from, out of, or in connection with the code or the use or other dealings in the code.
-
