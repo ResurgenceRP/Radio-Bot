@@ -16,22 +16,7 @@ This Discord bot is specifically designed for DayZ Roleplay (RP) communities, ai
   - Reposted radio messages are automatically deleted after 24 hours (configurable). This ensures that the channel remains clutter-free and focused on relevant role-play communication.
 
 - **Scheduled Cleanup:**
-  - Uses a periodic cleanup task to handle expired messages efficiently, ensuring performance and scalability.
-
-- **Configuration Validation:**
-  - Ensures valid configuration using schema validation via `pydantic`, reducing errors caused by misconfigurations.
-
-- **Error Notification and Graceful Shutdown:**
-  - If a critical error occurs (e.g., database failures), the bot posts an informative message in the public channel, alerts administrators with detailed error information, and proceeds to shut down gracefully to prevent further issues.
-
-- **Runtime Error Handling:**
-  - Errors that occur while the bot is running are handled gracefully. The bot notifies the public and administrators about critical issues and shuts down if necessary to prevent continued malfunction.
-
-- **Typing Indicators for User Feedback:**
-  - During database operations, the bot shows a typing indicator, ensuring users are aware that the bot is processing.
-
-- **Manual Shutdown Handling:**
-  - `KeyboardInterrupt` (manual bot shutdown via terminal) is handled quietly without error messages sent to channels, providing a controlled shutdown experience.
+  - Uses a periodic (each 30 seconds) cleanup task to handle expired messages efficiently, ensuring performance and scalability.
 
 ## Setup Instructions
 
