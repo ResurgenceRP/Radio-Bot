@@ -19,7 +19,19 @@ This Discord bot is specifically designed for DayZ Roleplay (RP) communities, ai
   - Uses a periodic cleanup task to handle expired messages efficiently, ensuring performance and scalability.
 
 - **Configuration Validation:**
-  - Ensures valid configuration using schema validation, reducing errors caused by misconfigurations.
+  - Ensures valid configuration using schema validation via `pydantic`, reducing errors caused by misconfigurations.
+
+- **Error Notification and Graceful Shutdown:**
+  - If a critical error occurs (e.g., database failures), the bot posts an informative message in the public channel, alerts administrators with detailed error information, and proceeds to shut down gracefully to prevent further issues.
+
+- **Runtime Error Handling:**
+  - Errors that occur while the bot is running are handled gracefully. The bot notifies the public and administrators about critical issues and shuts down if necessary to prevent continued malfunction.
+
+- **Typing Indicators for User Feedback:**
+  - During database operations, the bot shows a typing indicator, ensuring users are aware that the bot is processing.
+
+- **Manual Shutdown Handling:**
+  - `KeyboardInterrupt` (manual bot shutdown via terminal) is handled quietly without error messages sent to channels, providing a controlled shutdown experience.
 
 ## Setup Instructions
 
@@ -31,7 +43,7 @@ This Discord bot is specifically designed for DayZ Roleplay (RP) communities, ai
    - In the application's settings menu on the left, select the **Bot** tab and click "Add Bot."
    - Confirm by clicking "Yes, do it!"
    - Under the **Bot** tab, scroll down to "Token" and click the "Copy" button to copy your bot token.
-   - While in the **Bot** tab, enable following intents: **Presence Intent**, **Server Members Intent**, **Message Content Intent**
+   - While in the **Bot** tab, enable the following intents: **Presence Intent**, **Server Members Intent**, **Message Content Intent**
    > [!CAUTION]
    > Keep your token secret! Do not share it publicly.
 
@@ -49,7 +61,7 @@ This Discord bot is specifically designed for DayZ Roleplay (RP) communities, ai
    - Ensure Python 3.9+ is installed on your system.
    - Install the required libraries:
      ```bash
-     pip install -U discord.py aiomysql pydantic
+     pip install -U discord.py aiomysql pydantic PyYAML
      ```
 
 ### 4. **Configure the Bot**
@@ -65,9 +77,10 @@ This Discord bot is specifically designed for DayZ Roleplay (RP) communities, ai
       USER: "your_username"                # username in database with access to database defined in DATABASE_NAME, string
       PASSWORD: "your_password"            # Password to USER account, string
       DATABASE_NAME: "RADIO_BOT"           # Database name, default: RADIO_BOT, string
+     STAFF_ROLE_ID: 987654321012345678     # ID of the staff role for administrative notifications
      ``` 
    > [!IMPORTANT]  
-   > If you decide to use database storage it is important to create a new dedicated database user for the bot following your flavor of database instructions. Avoid using admin accounts with broad access ranges for security reasons. If you are unsure which is better choice for you flatfile storage is a safer bet albeit might be slower on servers with a lot of messages being sent.   
+   > If you decide to use database storage, it is important to create a new dedicated database user for the bot following your flavor of database instructions. Avoid using admin accounts with broad access ranges for security reasons. If you are unsure which is a better choice for you, flatfile storage is a safer bet albeit might be slower on servers with a lot of messages being sent.
 
 ### 5. **Run the Bot**
    - Navigate to the directory containing the script and `config.yaml`.
@@ -88,8 +101,8 @@ This Discord bot is specifically designed for DayZ Roleplay (RP) communities, ai
      [Install]
      WantedBy=multi-user.target
      ```
-   > [!TIP]
-   > Setting bot to run as serivice will allow it to automatically start after a crash or server reboot
+   > [!TIP]  
+   > Setting the bot to run as a service will allow it to automatically start after a crash or server reboot.
 
 ### 6. **MySQL Database Setup**
    - If using a database, ensure MySQL is running and accessible.
@@ -110,27 +123,24 @@ Once set up, the bot will automatically:
 - Log messages in the admin channel for moderation purposes.
 - Delete reposted messages after the specified duration (default: 24 hours).
 - Notify administrators in case of critical errors (e.g., database failures).
+- Shutdown gracefully when a critical error is encountered.
 
 ### Example Configuration Validation Errors
 If your `config.yaml` file is missing required keys or has invalid types, the bot will display detailed validation errors to help you fix the configuration.
 
 ## Advanced Features
 
-- **Fallback to JSON:**
-  - If the database connection fails during runtime, the bot will fallback to JSON-based persistence, ensuring uninterrupted operation.
-
-- **Graceful Error Reporting:**
-  - For unrecoverable errors, the bot posts a clear message in the public channel:
-    ```
-    BOT ERROR PLEASE CONTACT ADMINISTRATOR
-    ```
-    - Additionally, the admin channel receives detailed error information.
+- **Fallback to JSON Storage:**
+  - If the database connection fails during runtime, the bot will switch to JSON-based persistence, ensuring uninterrupted operation.
 
 - **Periodic Cleanup:**
   - The bot uses a periodic task to delete expired messages efficiently, ensuring smooth operation even under high usage.
 
 - **Retry Mechanisms:**
   - Automatically retries Discord API calls when encountering rate limits or transient errors.
+
+- **Typing Indicators:**
+  - During database operations, the bot shows a typing indicator to let users know it is processing, enhancing user experience.
 
 ## Disclaimer
 
