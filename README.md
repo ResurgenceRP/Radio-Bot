@@ -31,6 +31,7 @@ This Discord bot is specifically designed for DayZ Roleplay (RP) communities, ai
    - In the application's settings menu on the left, select the **Bot** tab and click "Add Bot."
    - Confirm by clicking "Yes, do it!"
    - Under the **Bot** tab, scroll down to "Token" and click the "Copy" button to copy your bot token.
+   - While in the **Bot** tab, enable following intents: **Presence Intent**, **Server Members Intent**, **Message Content Intent**
    > [!CAUTION]
    > Keep your token secret! Do not share it publicly.
 
@@ -55,15 +56,15 @@ This Discord bot is specifically designed for DayZ Roleplay (RP) communities, ai
    - Edit `config.yaml` file in the same directory as the script with the following structure:
      ```yaml
      TOKEN: "your_discord_bot_token"
-     CHANNEL_ID: 123456789012345678  # Replace with your radio channel ID
+     CHANNEL_ID: 123456789012345678        # Replace with your radio channel ID
      ADMIN_CHANNEL_ID: 123456789012345678  # Replace with your admin channel ID
      USE_DATABASE: false                   # Change to "true" to enable Database Storage, set to "false" to switch to flatfile storage. Default value: false, Boolean
      DATABASE:
-      HOST: "localhost"                   # Location of database server, string
-      PORT: 3306                          # Port database is listening on, integer
-      USER: "your_username"               # username in database with access to database defined in DATABASE_NAME, string
-      PASSWORD: "your_password"           # Password to USER account, string
-      DATABASE_NAME: "RADIO_BOT"          # Database name, default: RADIO_BOT, string
+      HOST: "localhost"                    # Location of database server, string
+      PORT: 3306                           # Port database is listening on, integer
+      USER: "your_username"                # username in database with access to database defined in DATABASE_NAME, string
+      PASSWORD: "your_password"            # Password to USER account, string
+      DATABASE_NAME: "RADIO_BOT"           # Database name, default: RADIO_BOT, string
      ``` 
    > [!IMPORTANT]  
    > If you decide to use database storage it is important to create a new dedicated database user for the bot following your flavor of database instructions. Avoid using admin accounts with broad access ranges for security reasons. If you are unsure which is better choice for you flatfile storage is a safer bet albeit might be slower on servers with a lot of messages being sent.   
@@ -95,7 +96,7 @@ This Discord bot is specifically designed for DayZ Roleplay (RP) communities, ai
    - The bot will automatically create the required `deletion_schedule` table if it doesn’t exist.
 
 ### 7. **Bot Permissions**
-   - Make sure your bot has the following permissions:
+   - Make sure your bot has the following permissions in appropriate channels:
      - Read Messages
      - Send Messages
      - Manage Messages
