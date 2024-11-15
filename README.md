@@ -39,6 +39,11 @@ This Discord bot is specifically designed for DayZ Roleplay (RP) communities, ai
 
      Alternatively you can setup bot as service using something similar to:
      ```
+<<<<<<< Updated upstream
+=======
+   - Alternatively, set up the bot as a service [Linux]:
+     ```ini
+>>>>>>> Stashed changes
      [Unit]
      Description=SERVICE_NAME
 
