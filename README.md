@@ -52,17 +52,21 @@ This Discord bot is specifically designed for DayZ Roleplay (RP) communities, ai
 ### 4. **Configure the Bot**
    - Edit `config.yaml` file in the same directory as the script with the following structure:
      ```yaml
-     TOKEN: "your_discord_bot_token"
-     CHANNEL_ID: 123456789012345678        # Replace with your radio channel ID
-     ADMIN_CHANNEL_ID: 123456789012345678  # Replace with your admin channel ID
-     USE_DATABASE: false                   # Change to "true" to enable Database Storage, set to "false" to switch to flatfile storage. Default value: false, Boolean
-     DATABASE:
-      HOST: "localhost"                    # Location of database server, string
-      PORT: 3306                           # Port database is listening on, integer
-      USER: "your_username"                # username in database with access to database defined in DATABASE_NAME, string
-      PASSWORD: "your_password"            # Password to USER account, string
-      DATABASE_NAME: "RADIO_BOT"           # Database name, default: RADIO_BOT, string
-     STAFF_ROLE_ID: 987654321012345678     # ID of the staff role for administrative notifications
+        TOKEN: "TOKEN"                                          # Discord bot token, string
+        CHANNEL_ID: 1307016491677519943                         # Channel ID for bot to listen in, integer
+        ADMIN_CHANNEL_ID: 1307016506739130400                   # Channel ID of channel for administrator login (Player name, Message, no autodeletion), integer
+        STAFF_ROLE_ID: 1307026532895817829                      # Role ID of staff member group to ping on critical errors, integer
+        FOOTER_PUBLIC: "Embeed Footer for Public Reposts."      # Footer used in public channels, should not be empty | String
+        FOOTER_ADMIN: "Message Footer used in Admin channels"   # Footer used in Admin Channel, should not be empty | String
+
+        # OPTIONAL !!!! Change flatfile storage to SQL based database:
+        USE_DATABASE: false                                     # Change to "true" to enable Database Storage, set to "false" to switch to flatfile storage. Default value: false, Boolean
+        DATABASE:
+          HOST: "localhost"                                     # Location of database server, string
+          PORT: 3306                                            # Port database is listening on, integer
+          USER: "USERNAME"                                      # username in database with access to database defined in DATABASE_NAME, string
+          PASSWORD: "PASSWORD"                                  # Password to USER account, string
+          DATABASE_NAME: "DATABASE_NAME"                        # Database name, default: RADIO_BOT, string
      ``` 
    > [!IMPORTANT]  
    > If you decide to use database storage, it is important to create a new dedicated database user for the bot following your flavor of database instructions. Avoid using admin accounts with broad access ranges for security reasons. If you are unsure which is a better choice for you, flatfile storage is a safer bet albeit might be slower on servers with a lot of messages being sent.
