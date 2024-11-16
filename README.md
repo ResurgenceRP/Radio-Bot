@@ -125,9 +125,5 @@ If your `config.yaml` file is missing required keys or has invalid types, the bo
 - **Retry Mechanisms:**
   - Automatically retries Discord API calls when encountering rate limits or transient errors.
 
-- **Typing Indicators:**
-  - During database operations, the bot shows a typing indicator to let users know it is processing, enhancing user experience.
-
-## Disclaimer
 
 This code is provided "as is", without warranty of any kind, express or implied, including but not limited to the warranties of merchantability, fitness for a particular purpose, and noninfringement. In no event shall the authors or copyright holders be liable for any claim, damages, or other liability, whether in an action of contract, tort or otherwise, arising from, out of, or in connection with the code or the use or other dealings in the code.
