@@ -21,6 +21,8 @@ class Config(BaseModel):
     STAFF_ROLE_ID: int
     USE_DATABASE: bool = False
     DATABASE: Optional[dict]
+    FOOTER_PUBLIC: str
+    FOOTER_ADMIN: str
 
 # Load configuration from YAML
 def load_config(config_file='config.yaml') -> Config:
@@ -40,6 +42,8 @@ ADMIN_CHANNEL_ID = config.ADMIN_CHANNEL_ID
 USE_DATABASE = config.USE_DATABASE
 DB_CONFIG = config.DATABASE
 STAFF_ROLE_ID = config.STAFF_ROLE_ID
+TEXT_FOOTER_PUBLIC = config.FOOTER_PUBLIC
+TEXT_FOOTER_ADMIN = config.FOOTER_ADMIN
 
 # Database connection pool
 db_pool = None
@@ -402,7 +406,7 @@ async def on_message(message):
         embed.add_field(name="The radio crackles to life and you hear a voice...:", value=message_chunks[0], inline=False)
         for chunk in message_chunks[1:]:
             embed.add_field(name="\u200b", value=chunk, inline=False)
-        embed.set_footer(text="ResurgenceRP Radio")
+        embed.set_footer(text=TEXT_FOOTER_PUBLIC)
 
         # Create Staff Log embed with user name, user ID, and a ping to the sender
         sender_id = message.author.id
@@ -410,7 +414,7 @@ async def on_message(message):
         embed_admin.add_field(name=f"User: {message.author} ID: {sender_id} | Sent a radio message: ", value=message_chunks[0], inline=False)
         for chunk in message_chunks[1:]:
             embed_admin.add_field(name="\u200b", value=chunk, inline=False)
-        embed_admin.set_footer(text="ResurgenceRP Radio Admin Log")
+        embed_admin.set_footer(text=TEXT_FOOTER_ADMIN)
 
         # First, delete the original message.
         await message.delete()
