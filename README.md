@@ -119,9 +119,6 @@ If your `config.yaml` file is missing required keys or has invalid types, the bo
 
 ## Advanced Features
 
-- **Fallback to JSON Storage:**
-  - If the database connection fails during runtime, the bot will switch to JSON-based persistence, ensuring uninterrupted operation.
-
 - **Periodic Cleanup:**
   - The bot uses a periodic task to delete expired messages efficiently, ensuring smooth operation even under high usage.
 
